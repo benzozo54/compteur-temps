@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Temps écoulé</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 80px;
+      background-color: #f4f4f4;
+    }
+    #compteur {
+      font-size: 30px;
+      color: #2c3e50;
+      padding: 20px;
+      background: #fff;
+      display: inline-block;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Temps écoulé depuis ......</h1>
+  <div id="compteur">Calcul en cours...</div>
+
+  <script>
+    function mettreAJourCompteur() {
+      const dateRef = new Date('2019-02-17T21:00:00');
+      const maintenant = new Date();
+
+      let totalSecondes = Math.floor((maintenant - dateRef) / 1000);
+
+      const secondes = totalSecondes % 60;
+      totalSecondes = Math.floor(totalSecondes / 60);
+      const minutes = totalSecondes % 60;
+      totalSecondes = Math.floor(totalSecondes / 60);
+      const heures = totalSecondes % 24;
+      totalSecondes = Math.floor(totalSecondes / 24);
+
+      let annee = maintenant.getFullYear() - dateRef.getFullYear();
+      let mois = maintenant.getMonth() - dateRef.getMonth();
+      let jour = maintenant.getDate() - dateRef.getDate();
+
+      if (jour < 0) {
+        mois--;
+        const dernierMois = new Date(maintenant.getFullYear(), maintenant.getMonth(), 0);
+        jour += dernierMois.getDate();
+      }
+
+      if (mois < 0) {
+        annee--;
+        mois += 12;
+      }
+
+      document.getElementById('compteur').textContent =
+        `${annee} ans, ${mois} mois, ${jour} jours, ` +
+        `${String(heures).padStart(2, '0')}h ` +
+        `${String(minutes).padStart(2, '0')}m ` +
+        `${String(secondes).padStart(2, '0')}s`;
+    }
+
+    mettreAJourCompteur();
+    setInterval(mettreAJourCompteur, 1000);
+  </script>
+
+</body>
+</html>
