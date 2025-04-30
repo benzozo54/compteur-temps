@@ -2,35 +2,43 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Temps écoulé</title>
+  <title>Compteurs de temps</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin-top: 80px;
       background-color: #f4f4f4;
+      padding: 40px;
     }
-    #compteur {
-      font-size: 30px;
+    h1 {
+      margin-top: 50px;
+    }
+    .compteur {
+      font-size: 24px;
       color: #2c3e50;
-      padding: 20px;
+      padding: 15px;
+      margin: 20px auto;
       background: #fff;
-      display: inline-block;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
     }
   </style>
 </head>
 <body>
 
   <h1>Temps écoulé :</h1>
-  <div id="compteur">Calcul en cours...</div>
+  <div id="compteur1" class="compteur">Calcul en cours...</div>
+
+  <h1>Travaux maison depuis :</h1>
+  <div id="compteur2" class="compteur">Calcul en cours...</div>
+
+  <h1>Prochain CT du Kangoo :</h1>
+  <div id="compteur3" class="compteur">Calcul en cours...</div>
 
   <script>
-    function mettreAJourCompteur() {
-      const dateRef = new Date('2019-02-17T21:00:00');
+    function calculerTempsEcoule(dateRef) {
       const maintenant = new Date();
-
       let totalSecondes = Math.floor((maintenant - dateRef) / 1000);
 
       const secondes = totalSecondes % 60;
@@ -55,15 +63,47 @@
         mois += 12;
       }
 
-      document.getElementById('compteur').textContent =
-        `${annee} ans, ${mois} mois, ${jour} jours, ` +
-        `${String(heures).padStart(2, '0')}h ` +
-        `${String(minutes).padStart(2, '0')}m ` +
-        `${String(secondes).padStart(2, '0')}s`;
+      return `${annee} ans, ${mois} mois, ${jour} jours, ` +
+             `${String(heures).padStart(2, '0')}h ` +
+             `${String(minutes).padStart(2, '0')}m ` +
+             `${String(secondes).padStart(2, '0')}s`;
     }
 
-    mettreAJourCompteur();
-    setInterval(mettreAJourCompteur, 1000);
+    function calculerTempsRestant(dateFuture) {
+      const maintenant = new Date();
+      let diff = dateFuture - maintenant;
+
+      if (diff <= 0) {
+        return "Échéance dépassée depuis " + calculerTempsEcoule(dateFuture);
+      }
+
+      let totalSecondes = Math.floor(diff / 1000);
+
+      const secondes = totalSecondes % 60;
+      totalSecondes = Math.floor(totalSecondes / 60);
+      const minutes = totalSecondes % 60;
+      totalSecondes = Math.floor(totalSecondes / 60);
+      const heures = totalSecondes % 24;
+      totalSecondes = Math.floor(totalSecondes / 24);
+
+      const jours = totalSecondes % 30;
+      const mois = Math.floor(totalSecondes / 30) % 12;
+      const annees = Math.floor(totalSecondes / 365);
+
+      return `Il reste ${annees} ans, ${mois} mois, ${jours} jours, ` +
+             `${String(heures).padStart(2, '0')}h ` +
+             `${String(minutes).padStart(2, '0')}m ` +
+             `${String(secondes).padStart(2, '0')}s`;
+    }
+
+    function mettreAJourTousLesCompteurs() {
+      document.getElementById('compteur1').textContent = calculerTempsEcoule(new Date('2019-02-17T21:00:00'));
+      document.getElementById('compteur2').textContent = calculerTempsEcoule(new Date('2024-07-14T00:00:00'));
+      document.getElementById('compteur3').textContent = calculerTempsRestant(new Date('2026-06-25T00:00:00'));
+    }
+
+    mettreAJourTousLesCompteurs();
+    setInterval(mettreAJourTousLesCompteurs, 1000);
   </script>
 
 </body>
